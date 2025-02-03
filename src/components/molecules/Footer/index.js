@@ -7,13 +7,14 @@ import { fetchStatus, generateSignature, historyConfig } from '../../../utils/fu
 import { paths } from '../../../utils';
 import { useHistory } from 'react-router-dom';
 
-const Footer = () => {
+const Footer = ({ onClickSection }) => {
 
 	const history = useHistory(historyConfig);
 
 	const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-	const [ListHeaderMenu, setListHeaderMenu] = useState([])
+	const [ListFooterMenuLeft, setListFooterMenuLeft] = useState([])
+	const [ListFooterMenuRigth, setListFooterMenuRigth] = useState([])
 
 	useEffect(() => {
         window.scrollTo(0, 0)
@@ -36,7 +37,7 @@ const Footer = () => {
             "Id": ""
         });
 
-        var url = paths.URL_API_WEB + 'ListHeaderMenu';
+        var url = paths.URL_API_WEB + 'ListFooterMenu';
         var Signature = generateSignature(requestBody)
 
         fetch(url, {
@@ -51,7 +52,8 @@ const Footer = () => {
         .then(response => response.json())
         .then((data) => {
             if (data.ErrorCode === "0") {
-                setListHeaderMenu(data.Result)
+                setListFooterMenuLeft(data.ResultLeft)
+                setListFooterMenuRigth(data.ResultRight)
             } else {
                 // setErrorMessageAlert(data.ErrorMessage);
                 // setShowAlert(true);
@@ -72,9 +74,13 @@ const Footer = () => {
         });
     }
 
-	const handlePage = () => {
-
-	}
+	const changePage = (urlPage, page) => {
+        if (page == "DEVELOPMENTS") {
+            onClickSection()
+        } else {
+            window.location.href = urlPage
+        }
+    }
 
 	return (
 		<div className={windowWidth > 1340 ? "custom-container" : "custom-container-responsive"}>
@@ -107,20 +113,19 @@ const Footer = () => {
 						<div style={{ padding:30 }} />
 						<div className="container-content-right">
 							<div style={{ fontSize:windowWidth > 1340 ? 20 : 15 }}>
-								<div>ABOUT US</div>
-								<div style={{ padding:8 }} />
-								<div>DEVELOPMENT</div>
-								<div style={{ padding:8 }} />
-								<div>SERVICES</div>
-								<div style={{ padding:8 }} />
-								<div>PROMOTION</div>
+								{ListFooterMenuLeft.map((item,index) => {
+									return <>
+										<div style={{ cursor:'pointer' }} onClick={() => changePage(item.UrlPage, item.MenuName)}>{item.MenuName}</div>
+									</>
+								})}
 							</div>
 							<div style={{ fontSize:windowWidth > 1340 ? 20 : 15 }}>
-								<div>SUSTAINABILITY</div>
-								<div style={{ padding:8 }} />
-								<div>NEWS</div>
-								<div style={{ padding:8 }} />
-								<div>CAREER</div>
+								{ListFooterMenuRigth.map((item,index) => {
+									return <>
+										<div style={{ cursor:'pointer' }} onClick={() => changePage(item.UrlPage, item.MenuName)}>{item.MenuName}</div>
+										<div style={{ padding:8 }} />
+									</>
+								})}
 							</div>
 						</div>
 					</>}
@@ -130,20 +135,20 @@ const Footer = () => {
 				{windowWidth > 1340 &&
 				<div className="container-content-right">
 					<div>
-						<div>ABOUT US</div>
-						<div style={{ padding:8 }} />
-						<div>DEVELOPMENT</div>
-						<div style={{ padding:8 }} />
-						<div>SERVICES</div>
-						<div style={{ padding:8 }} />
-						<div>PROMOTION</div>
+						{ListFooterMenuLeft.map((item,index) => {
+							return <>
+								<div style={{ cursor:'pointer' }} onClick={() => changePage(item.UrlPage, item.MenuName)}>{item.MenuName}</div>
+								<div style={{ padding:8 }} />
+							</>
+						})}
 					</div>
 					<div>
-						<div>SUSTAINABILITY</div>
-						<div style={{ padding:8 }} />
-						<div>NEWS</div>
-						<div style={{ padding:8 }} />
-						<div>CAREER</div>
+						{ListFooterMenuRigth.map((item,index) => {
+							return <>
+								<div style={{ cursor:'pointer' }} onClick={() => changePage(item.UrlPage, item.MenuName)}>{item.MenuName}</div>
+								<div style={{ padding:8 }} />
+							</>
+						})}
 					</div>
 				</div>	
 				}
